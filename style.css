@@ -12,6 +12,7 @@
 }
 
 body {
+  position: relative;
   background-color: #baffb4;
 }
 
@@ -50,4 +51,34 @@ body > p {
   font-weight: bold;
   background-color: #fffda2;
   color: #ff6363;
+}
+.restart {  
+  display: none;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+  margin-top: 2em;
+  color: #ff6363;
+  background-color: #fffda2;
+  border-radius: 8px;
+  border-style: none;
+  cursor: pointer;
+  font-weight: bold;
+  height: 50px;
+  min-width: fit-content;
+  width: 10vw;
+  line-height: 20px;
+  outline: none;
+  padding: 10px 16px;
+  text-align: center;
+  text-decoration: none;
+  transition: color 100ms;
+  touch-action: manipulation;
+}
+.restart:hover,
+.restart:focus {
+  background-color: #fffc48;
+}
+.restart.show {
+display: block;
 }
