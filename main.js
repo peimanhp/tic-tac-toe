@@ -1,14 +1,16 @@
 let gameBoard = {};
-const magicSquare = [8, 1, 6, 3, 5, 7, 4, 9, 2];
-let x = [];
-let o = [];
+// const magicSquare = [8, 1, 6, 3, 5, 7, 4, 9, 2];
 const result = document.querySelector(".result");
 const restartBtn = document.querySelector(".restart");
+const scoreBoard = document.querySelector(".score-board");
+
 function Player(name) {
   this.name = name;
+  this.signs = [];
+  this.wins = [0];
 }
-const playerX = new Player("x");
-const playerO = new Player("o");
+const playerX = new Player("X");
+const playerO = new Player("O");
 
 const cells = document.querySelectorAll(".cells");
 function cellsAddEvents() {
@@ -24,64 +26,74 @@ let clickCounter = 0;
 function checkSign(e) {
   clickCounter++;
   if (clickCounter % 2 === 1) {
-    e.target.innerHTML = "X";
-    gameBoard[e.target.id] = e.target.innerHTML;
-    x.push(Number(e.target.id));
-    winCheck();
-    console.log(x);
+    whosTurn(e, playerX.name, playerX.signs, playerX.wins);
+    console.log(playerX.signs);
   } else {
-    e.target.innerHTML = "O";
-    gameBoard[e.target.id] = e.target.innerHTML;
-    o.push(Number(e.target.id));
-    console.log(o);
+    whosTurn(e, playerO.name, playerO.signs, playerO.wins);
+    // console.log(playerO.signs);
   }
   e.target.removeEventListener("click", checkSign);
 }
 
-function winCheck() {
-  if (x.length < 3) return;
-  else if (x.length == 3) {
-    const sum = x.reduce((acc, cur) => acc + cur);
+function whosTurn(e, playerName, playerSigns, playerWins) {
+  e.target.innerHTML = playerName;
+  gameBoard[e.target.id] = e.target.innerHTML;
+  playerSigns.push(Number(e.target.id));
+  winCheck(playerSigns, playerName, playerWins);
+}
+
+let gameOver = false;
+
+function winCheck(arr, playerName, playerWins) {
+  if (arr.length < 3) return;
+  else if (arr.length == 3) {
+    const sum = arr.reduce((acc, cur) => acc + cur);
     if (sum == 15) {
-      playerWin();
+      gameOver = true;
+      playerWin(playerName, playerWins);
     }
-  } else if (x.length == 4) {
-    for (let i = 0; i < x.length; i++) {
+  } else if (arr.length == 4) {
+    for (let i = 0; i < arr.length; i++) {
       let sum = 0;
-      for (let j = 0; j < x.length; j++) {
+      for (let j = 0; j < arr.length; j++) {
         if (i == j) continue;
-        else {
-          sum += x[j];
-        }
+        else sum += arr[j];
       }
       console.log(sum);
       if (sum == 15) {
-        playerWin();
+        gameOver = true;
+        playerWin(playerName, playerWins);
         break;
       }
     }
-  } else if (x.length == 5) {
-    for (let i = 0; i < x.length; i++) {
+  } else if (arr.length == 5) {
+    for (let i = 0; i < arr.length - 2; i++) {
+      if (gameOver === true) break;
       let sum = 0;
-      for (let j = 0; j < x.length; j++) {
-        if (i == j || j == i + 1) continue;
-        else {
-          sum += x[j];
+      for (let j = i + 1; j < arr.length - 1; j++) {
+        if (gameOver === true) break;
+        for (let k = j + 2; k < arr.length; k++) {
+          sum = arr[i] + arr[j] + arr[k];
+          console.log(sum);
+          if (sum == 15) {
+            gameOver = true;
+            playerWin(playerName, playerWins);
+            break;
+          } else playerWin();
         }
-      }
-      console.log(sum);
-      if (sum == 15) {
-        playerWin();
-        break;
       }
     }
   }
 }
 
-function playerWin() {
-  console.log("win");
-  result.innerHTML = "Player X won!";
-  restartBtn.classList.add('show');
+function playerWin(playerName, playerWins) {
+  if (gameOver === true) {
+    result.innerHTML = `Player ${playerName} Won!`;
+    playerWins[0] += 1;
+  } else result.innerHTML = `It's Tie`;
+  scoreBoard.innerHTML = `X: ${playerX.wins[0]} - O: ${playerO.wins[0]}`;
+  scoreBoard.classList.add("show");
+  restartBtn.classList.add("show");
   stopPlaying();
 }
 
@@ -91,17 +103,17 @@ function stopPlaying() {
   }
 }
 
-restartBtn.addEventListener('click', resetGame);
+restartBtn.addEventListener("click", resetGame);
 
 function resetGame() {
-  gameBoard = [];
-  x = [];
-  o = [];
-  result.innerHTML = '';  
-  restartBtn.classList.remove('show');
+  playerX.signs = [];
+  playerO.signs = [];
+  result.innerHTML = "";
+  restartBtn.classList.remove("show");
   for (const cell of cells) {
-    cell.innerHTML = '';
+    cell.innerHTML = "";
   }
   cellsAddEvents();
   clickCounter = 0;
+  gameOver = false;
 }

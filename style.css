@@ -5,9 +5,9 @@
   font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
-@media screen and (max-height: 800px) {
+@media screen and (max-height: 850px) {
   .main-square {
-    margin-top: 100px;
+    margin-top: 130px;
   }
 }
 
@@ -28,6 +28,17 @@ body > p {
   font-size: 2em;
   margin-top: 0.5em;
   font-weight: bold;
+}
+.score-board {
+  display: none;
+  color: #ff6363;
+  text-align: center;
+  font-size: 1.5em;
+  margin-top: 0.5em;
+  font-weight: bold;
+}
+.score-board.show {
+  display: block;
 }
 .row {
   display: flex;
@@ -52,7 +63,7 @@ body > p {
   background-color: #fffda2;
   color: #ff6363;
 }
-.restart {  
+.restart {
   display: none;
   position: absolute;
   left: 50%;
@@ -80,5 +91,5 @@ body > p {
   background-color: #fffc48;
 }
 .restart.show {
-display: block;
+  display: block;
 }
